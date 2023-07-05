@@ -40,7 +40,7 @@ public class PriceService {
     public static final List<String> csvHeader = Arrays.asList("STOREID", "SKU", "NAME", "PRICE", "DATE");
     public static final String FILE_PATH = "C:\\PricingFiles";
 
-    public String upload(MultipartFile file) {
+    public String upload(MultipartFile file, String userName) {
         String uploadResponse = null;
         try {
             List<String> data = new ArrayList<>();
@@ -70,7 +70,7 @@ public class PriceService {
                 log.error("Exception in reading multipart file", e);
             }
             if (isNull(uploadResponse))
-                uploadResponse = convertToPricingModel(data, uploadResponse, file);
+                uploadResponse = convertToPricingModel(data, uploadResponse, file, userName);
 
 
         } catch (Exception e) {
@@ -110,13 +110,14 @@ public class PriceService {
         return isPerMetadata;
     }
 
-    private String convertToPricingModel(List<String> data, String uploadResponse, MultipartFile file) {
+    private String convertToPricingModel(List<String> data, String uploadResponse, MultipartFile file,
+                                         String userName) {
         FileUpload fileUpload = null;
         String filePath = FILE_PATH + File.separator + file.getOriginalFilename();
         try {
 
             file.transferTo(new File(filePath));
-            fileUpload = fileUploadService.addFile(file.getOriginalFilename(), filePath);
+            fileUpload = fileUploadService.addFile(file.getOriginalFilename(), filePath, userName);
 
             log.info("FileID : {} received", fileUpload);
         } catch (IOException e) {
@@ -165,10 +166,10 @@ public class PriceService {
             index.getAndIncrement();
         });
 
-        if(nonNull(pricingModels) && !pricingModels.isEmpty())
+        if (nonNull(pricingModels) && !pricingModels.isEmpty())
             priceModelService.dumpPricingInfo(pricingModels);
 
-        if(nonNull(errors) && !errors.isEmpty())
+        if (nonNull(errors) && !errors.isEmpty())
             uploadResponse = String.join("\n", errors);
         else
             uploadResponse = "File Uploaded Successfully";
@@ -185,7 +186,7 @@ public class PriceService {
     }
 
     public List<PricingModel> find(String field, String value) {
-       return priceModelService.find(field, value);
+        return priceModelService.find(field, value);
     }
 
 }
