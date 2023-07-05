@@ -1,5 +1,6 @@
 package org.divyad.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.divyad.domain.PricingModel;
 import org.divyad.service.PriceService;
@@ -18,9 +19,9 @@ public class PriceController {
     PriceService priceService;
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String upload(@RequestParam("File") MultipartFile file) {
+    public String upload(HttpServletRequest request, @RequestParam("File") MultipartFile file) {
         log.info("Entering upload of PriceController");
-        return priceService.upload(file);
+        return priceService.upload(file, request.getHeader("USERNAME"));
     }
 
     @GetMapping(value = "/find/{field}")

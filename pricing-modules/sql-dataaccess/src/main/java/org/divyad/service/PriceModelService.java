@@ -6,6 +6,7 @@ import org.divyad.repository.PricingModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -29,7 +30,7 @@ public class PriceModelService {
         List<PricingModel> pricingModels = null;
         switch (field) {
             case "STOREID":
-                pricingModels = pricingModelRepository.findByStoreId(value);
+                pricingModels = pricingModelRepository.findByStoreId(Long.valueOf(value));
                 break;
             case "SKU":
                 pricingModels = pricingModelRepository.findBySku(value);
@@ -38,10 +39,10 @@ public class PriceModelService {
                 pricingModels = pricingModelRepository.findByProduct(value);
                 break;
             case "PRICE":
-                pricingModels = pricingModelRepository.findByPrice(value);
+                pricingModels = pricingModelRepository.findByPrice(Double.valueOf(value));
                 break;
             case "DATE":
-                pricingModels = pricingModelRepository.findByDate(value);
+                pricingModels = pricingModelRepository.findByDate(Timestamp.valueOf(value));
                 break;
         }
 
